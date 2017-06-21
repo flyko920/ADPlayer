@@ -81,13 +81,13 @@ public class ADPlayerActivity extends FragmentActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                testData = getTestData(1);
                 playAD();
             }
         }, 5000);
     }
 
     private void playAD() {
-        testData = getTestData(1);
         if (position >= testData.size()) {
             position = 0;
         }
@@ -101,11 +101,12 @@ public class ADPlayerActivity extends FragmentActivity {
                 showVideo();
                 break;
             default:
-                Toast.makeText(this, "  ==  暂不支持 " + StringUtil.getFileType(testData.get(position).getFileName()) + " 格式的文件 ==  ",
+                Toast.makeText(this, "  暂不支持 " + StringUtil.getFileType(testData.get(position).getFileName()) + " 格式的文件 ",
                         Toast.LENGTH_SHORT).show();
+                position++;
+                playAD();
                 break;
         }
-
         position++;
     }
 
@@ -161,9 +162,6 @@ public class ADPlayerActivity extends FragmentActivity {
         ADBeenList = new ArrayList<>();
         File[] files = new File(Environment.getExternalStorageDirectory() + "/Download/test/").listFiles();
         for (File file : files) {
-//            if (file.getName().indexOf(keyword) >= 0) {
-//                result += file.getPath() + "\n";
-//            }
             L.d("  == 文件名  ==  " + file.getName() + "  == 文件地址 == "+ file.getParent());
             ADBeenList.add(new ADBean(file.getName()));
         }
