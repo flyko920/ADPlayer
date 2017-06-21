@@ -29,6 +29,7 @@
         android:gravity="center"
         android:textColor="@android:color/white"
         android:layout_height="30dp"
+        android:textSize="30sp"
         android:background="@android:color/black"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
