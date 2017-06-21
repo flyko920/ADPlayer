@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kdx.adplayer.R;
 import com.kdx.adplayer.beans.ADBean;
 import com.kdx.adplayer.ui.ADFinishListener;
@@ -28,7 +29,7 @@ import java.io.File;
 public class ImagePlayerFragment extends Fragment {
 
     private View view;
-    private TextView image_ad_textview,image_filename_textview;
+    private TextView image_ad_textview, image_filename_textview;
     private ImageView imageView;
     private CountDownTimer countDownTimer;
     private ADFinishListener mADFinishListener;
@@ -64,11 +65,13 @@ public class ImagePlayerFragment extends Fragment {
         L.d("  == 文件地址  ==  " + filePath);
         File file = new File(filePath);
         if (file.exists()) {
-            Bitmap bm = BitmapFactory.decodeFile(filePath);
-            L.d("  == 文件大小  ==  " + bm.getHeight() + " X " + bm.getWidth());
-            imageView.setImageBitmap(bm);
+//            Bitmap bm = BitmapFactory.decodeFile(filePath);
+//            L.d("  == 文件大小  ==  " + bm.getHeight() + " X " + bm.getWidth());
+//            imageView.setImageBitmap(bm);
 //            bm.recycle();
             image_filename_textview.setText(adInfo.getFileName());
+
+            Glide.with(getContext()).load(file).into(imageView);
         }
         countDownTimer = startCountDownTime(time);
         countDownTimer.start();
@@ -98,8 +101,8 @@ public class ImagePlayerFragment extends Fragment {
         CountDownTimer timer = new CountDownTimer(time * 1000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if (image_ad_textview!=null){
-                L.d("onTick  " + millisUntilFinished / 1000);
+                if (image_ad_textview != null) {
+                    L.d("onTick  " + millisUntilFinished / 1000);
                     image_ad_textview.setText("广告 " + millisUntilFinished / 1000 + " 秒");
                 }
             }

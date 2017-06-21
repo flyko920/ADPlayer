@@ -1,19 +1,23 @@
 package com.kdx.adplayer.ui;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.widget.Toast;
 
 import com.kdx.adplayer.R;
 import com.kdx.adplayer.beans.ADBean;
 import com.kdx.adplayer.ui.fragment.ImagePlayerFragment;
 import com.kdx.adplayer.ui.fragment.VideoPlayerFragment;
+import com.kdx.adplayer.utils.L;
 import com.kdx.adplayer.utils.StringUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +31,7 @@ public class ADPlayerActivity extends FragmentActivity {
     private ViewPager adplayer_viewpager;
     private List<Fragment> fragments;
     private ADPlayerAdapter adapter;
-    public ArrayList<ADBean> ADBeen;
+    public ArrayList<ADBean> ADBeenList;
     public int position = 0;
     private ArrayList<ADBean> testData;
     private VideoPlayerFragment mVideoPlayerFragment;
@@ -83,7 +87,7 @@ public class ADPlayerActivity extends FragmentActivity {
     }
 
     private void playAD() {
-        testData = getTestData();
+        testData = getTestData(1);
         if (position >= testData.size()) {
             position = 0;
         }
@@ -93,8 +97,12 @@ public class ADPlayerActivity extends FragmentActivity {
                 showImage();
                 break;
             case "mp4":                     //显示视频
-            case "flv":
+//            case "flv":
                 showVideo();
+                break;
+            default:
+                Toast.makeText(this, "  ==  暂不支持 " + StringUtil.getFileType(testData.get(position).getFileName()) + " 格式的文件 ==  ",
+                        Toast.LENGTH_SHORT).show();
                 break;
         }
 
@@ -134,22 +142,46 @@ public class ADPlayerActivity extends FragmentActivity {
         adplayer_viewpager = (ViewPager) findViewById(R.id.adplayer_viewpager);
     }
 
-    public ArrayList<ADBean> getTestData() {
-        ADBeen = new ArrayList<>();
+    public ArrayList<ADBean> getTestData(int type) {
+        switch (type) {
+            case 0:
+                getDataFromPicAndVid();
+                break;
+            case 1:
+                getDataFromTestDir();
+                break;
+        }
+        return ADBeenList;
+    }
 
-        ADBeen.add(new ADBean("timg5.jpg"));
-        ADBeen.add(new ADBean("4_test.mp4"));
-        ADBeen.add(new ADBean("timg6.jpg"));
-        ADBeen.add(new ADBean("2_oppo.mp4"));
-        ADBeen.add(new ADBean("timg7.jpg"));
-        ADBeen.add(new ADBean("5_test.mp4"));
-        ADBeen.add(new ADBean("timg8.jpg"));
+    /**
+     *  从SD卡路径/Download/test/读取文件。文件类型有 pm4 flv gif jpg
+     */
+    private void getDataFromTestDir() {
+        ADBeenList = new ArrayList<>();
+        File[] files = new File(Environment.getExternalStorageDirectory() + "/Download/test/").listFiles();
+        for (File file : files) {
+//            if (file.getName().indexOf(keyword) >= 0) {
+//                result += file.getPath() + "\n";
+//            }
+            L.d("  == 文件名  ==  " + file.getName() + "  == 文件地址 == "+ file.getParent());
+            ADBeenList.add(new ADBean(file.getName()));
+        }
+    }
 
-        ADBeen.add(new ADBean("1_oppo.mp4"));
-        ADBeen.add(new ADBean("3_oppo.mp4"));
+    private void getDataFromPicAndVid() {
+        ADBeenList = new ArrayList<>();
 
+        ADBeenList.add(new ADBean("timg5.jpg"));
+        ADBeenList.add(new ADBean("4_test.mp4"));
+        ADBeenList.add(new ADBean("timg6.jpg"));
+        ADBeenList.add(new ADBean("2_oppo.mp4"));
+        ADBeenList.add(new ADBean("timg7.jpg"));
+        ADBeenList.add(new ADBean("5_test.mp4"));
+        ADBeenList.add(new ADBean("timg8.jpg"));
 
-        return ADBeen;
+        ADBeenList.add(new ADBean("1_oppo.mp4"));
+        ADBeenList.add(new ADBean("3_oppo.mp4"));
     }
 
 }
