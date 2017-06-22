@@ -161,6 +161,9 @@ public class ADPlayerActivity extends FragmentActivity {
     private void getDataFromTestDir() {
         ADBeenList = new ArrayList<>();
         File[] files = new File(Environment.getExternalStorageDirectory() + "/Download/test/").listFiles();
+        if (files.length==0){
+            Toast.makeText(ADPlayerActivity.this,"  文件夹下广告媒体文件数为 0 ",Toast.LENGTH_LONG).show();
+        }
         for (File file : files) {
             L.d("  == 文件名  ==  " + file.getName() + "  == 文件地址 == "+ file.getParent());
             ADBeenList.add(new ADBean(file.getName()));
